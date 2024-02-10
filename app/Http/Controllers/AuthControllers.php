@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Services\UserService;
 use Illuminate\Http\Request;
@@ -14,7 +13,6 @@ class AuthControllers extends Controller
 {
 
 
-
     // user register
     public function registerUser(Request $request)
     {
@@ -24,7 +22,7 @@ class AuthControllers extends Controller
             'last_name' => 'required|string|max:191',
             'user_name' => 'required|string|max:191',
             'email' => 'required|string|max:191',
-            'password' => 'required|min:4|max:12'
+            'password' => 'required|string|min:4|max:12'
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -62,9 +60,10 @@ class AuthControllers extends Controller
         if (!$user || !Hash::check($fields['password'], $user->password)) {
             return response(['message' => 'Bad credits'], 401);
         }
+        error_log("here");
 
-        $token = $user->createToken($user->user_name)->plainTextToken();
-
+        $token = $user->createToken('token')->plainTextToken;
+        error_log($token);
         $response = [
             'user' => $user,
             'token' => $token
